@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import site.metacoding.dbproject.domain.user.User;
 import site.metacoding.dbproject.domain.user.UserRepository;
@@ -144,6 +143,9 @@ public class UserController {
     // 로그아웃 - 인증(로그인) O
     @GetMapping("/logout")
     public String logout() {
-        return "메인 페이지를 돌려주면 됨"; // PostController 만들고 수정하자
+        session.invalidate(); // 해당 JSESSIONID 영역 전체 날리기 -> 이게 로그아웃
+        // session.removeAttribute("principal"); // 해당 JSESSIONID 영역의 principal 키값만 날아가는
+        // 것
+        return "redirect:/loginForm"; // PostController 만들고 수정하자
     }
 }
