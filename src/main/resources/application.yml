@@ -21,9 +21,10 @@ spring:
 # ddl-auto: create는 서버 실행할 때마다 테이블을 삭제하고 새로 만드는 설정
 # ddl-auto: none은 서버 실행할 때마다 아무것도 하지 않는 옵션
 # ddl-auto: update는 필드 수정시에 필요한 옵션
+# create 최초 생성, update 개발 중(데이터 사라지지않음), none 개발완료
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       # 모델에서 설정한 이름대로 컬럼명 설정
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
