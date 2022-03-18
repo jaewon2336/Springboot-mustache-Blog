@@ -2,8 +2,10 @@ package site.metacoding.dbproject.service;
 
 import java.util.Optional;
 
-import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +14,7 @@ import site.metacoding.dbproject.domain.post.Post;
 import site.metacoding.dbproject.domain.post.PostRepository;
 import site.metacoding.dbproject.domain.user.User;
 
-@RequiredArgsConstructor  
+@RequiredArgsConstructor
 @Service
 public class PostService {
 
@@ -21,7 +23,7 @@ public class PostService {
     public Page<Post> 글목록보기(Integer page) {
         // 1. postRepository의 findAll() 호출
         // posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "id")); // sort
-        PageRequest pq = PageRequest.of(page, 3); // 페이지대로 3개씩 알아서 넘어가준다
+        PageRequest pq = PageRequest.of(page, 3, Sort.by(Direction.DESC, "id")); // 페이지대로 3개씩 알아서 넘어가준다
         return postRepository.findAll(pq);
     }
 
@@ -48,13 +50,13 @@ public class PostService {
         Optional<Post> postOp = postRepository.findById(id);
 
         // 변경감지
-        if(postOp.isPresent()) {
+        if (postOp.isPresent()) {
             Post postEntity = postOp.get();
             postEntity.setTitle(post.getTitle());
             postEntity.setContent(post.getContent());
         }
     } // 더티체킹 완료 (수정됨)
-    
+
     @Transactional
     public void 글삭제하기(Integer id) {
         postRepository.deleteById(id); // 실패했을 때 내부적으로 exception 터짐
