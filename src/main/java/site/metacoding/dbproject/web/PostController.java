@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.dbproject.domain.post.Post;
 import site.metacoding.dbproject.domain.user.User;
 import site.metacoding.dbproject.service.PostService;
+import site.metacoding.dbproject.web.dto.ResponseDto;
 
 @RequiredArgsConstructor // final이 붙은 애들에 대한 생성자를 만들어준다.
 @Controller
@@ -75,8 +77,26 @@ public class PostController {
 
     // DELETE 글 삭제 /post/{id} -> 글 목록으로 가기 - 인증 O
     @DeleteMapping("/s/post/{id}")
-    public String delete(@PathVariable Integer id) {
-        return "redirect:/";
+    public @ResponseBody ResponseDto<String> delete(@PathVariable Integer id) {
+
+        // 인증
+        User principal = (User) session.getAttribute("principal");
+
+        if (principal == null) { // 로그인 안됨
+            return new ResponseDto<String>(-1, "로그인에 실패하였습니다.", null);
+        }
+
+        // 권한
+        Post postEntity = postService.글상세보기(id); // 재활용
+
+        if(principal.getId() != postEntity.getUser().getId()) {
+            return new ResponseDto<String>(-1, "해당 글을 삭제할 권한이 없습니다.", null);
+        }
+
+
+        postService.글삭제하기(id); // 내부적으로 exception이 터지면 무조건 stackTrace를 리턴
+
+        return new ResponseDto<String>(1, "성공", null);
     }
 
     // UPDATE 글 수정 /post/{id} -> 글 상세보기 페이지 가기 - 인증 O

@@ -12,7 +12,7 @@ import site.metacoding.dbproject.domain.post.Post;
 import site.metacoding.dbproject.domain.post.PostRepository;
 import site.metacoding.dbproject.domain.user.User;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 @Service
 public class PostService {
 
@@ -48,8 +48,8 @@ public class PostService {
     }
     
     @Transactional
-    public void 글삭제하기() {
-
+    public void 글삭제하기(Integer id) {
+        postRepository.deleteById(id); // 실패했을 때 내부적으로 exception 터짐
     }
 
     @Transactional
